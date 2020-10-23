@@ -61,7 +61,7 @@ router.get('/supplier/:sup_id', async (req, res) => {
   const supplier = await Supplier.findById(req.params.sup_id);
   res.status(200).json(supplier);
 });
-
+// ------------------------------
 //PRODUCT
 //CRUD
 //CREATE
@@ -92,8 +92,37 @@ router.get('/supplier/:sup_id/product', async (req, res) => {
 });
 
 //UPDATE
+router.put('/supplier/:sup_id/product/:prod_id', async (req, res) => {
+  await Supplier.findById(req.params.sup_id, (err, supplier) => {
+    if (err) return res.status(400).json(err);
+    Product.findByIdAndUpdate(
+      req.params.prod_id,
+      req.body,
+      { new: true },
+      (err, product) => {
+        if (err) return res.status(400).json(err);
+        res.status(200).json(supplier);
+      }
+    );
+  });
+});
 
+//DELETE
+router.delete('/supplier/:sup_id/product/:prod_id', async (req, res) => {
+  await Supplier.findById(req.params.sup_id, (err, supplier) => {
+    if (err) return res.status(400).json(err);
+    Product.findByIdAndDelete(req.params.prod_id, (err) => {
+      if (err) return res.status(400).json(err);
+      const response = {
+        message: 'Product successfuly deleted',
+        id: req.params.prod_id,
+      };
+      return res.status(200).json(response);
+    });
+  });
+});
 
+// --------------------------------------------
 //show
 router.get('/supplier/:sup_id/product/:prod_id', async (req, res) => {
   await Supplier.findById(req.params.sup_id, (err, supplier) => {
