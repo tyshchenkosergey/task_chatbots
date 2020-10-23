@@ -1,9 +1,20 @@
 const express = require('express'),
   app = express(),
-  mongoose = require('mongoose'),
   bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
+//config
 require('dotenv').config();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+//routes
+const mainRoute = require('./routes/index');
+const supplierRoute = require('./routes/supplier/supplier');
+const productRoute = require('./routes/product/product');
+app.use(mainRoute);
+app.use(supplierRoute);
+app.use(productRoute);
 
 const dbURL = 'mongodb://localhost/store';
 mongoose
@@ -19,13 +30,6 @@ mongoose
   .catch((err) => {
     console.log('ERROR:', err.message);
   });
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-//routes
-const mainRoute = require('./routes/index');
-app.use(mainRoute);
 
 const port = process.env.PORT || 3000;
 app.listen(port, (err) => {
