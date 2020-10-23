@@ -56,4 +56,53 @@ router.delete('/supplier/:id', async (req, res) => {
   });
 });
 
+//show ROUTE
+router.get('/supplier/:sup_id', async (req, res) => {
+  const supplier = await Supplier.findById(req.params.sup_id);
+  res.status(200).json(supplier);
+});
+
+//PRODUCT
+//CRUD
+//CREATE
+router.post('/supplier/:sup_id/product', async (req, res) => {
+  await Supplier.findById(req.params.sup_id, (err, supplier) => {
+    if (err) return res.status(400).json(err);
+    const product = new Product({
+      name: req.body.name,
+      price: req.body.price,
+      category: req.body.category,
+      expDate: req.body.expDate,
+      amount: req.body.amount,
+    });
+    supplier.products.push(product);
+    product.supplier = supplier;
+    supplier.save();
+    product.save();
+    res.status(201).json(supplier);
+  });
+});
+
+//READ
+router.get('/supplier/:sup_id/product', async (req, res) => {
+  await Supplier.findById(req.params.sup_id, (err, supplier) => {
+    if (err) return res.status(400).json(err);
+    res.status(200).json(supplier);
+  });
+});
+
+//UPDATE
+
+
+//show
+router.get('/supplier/:sup_id/product/:prod_id', async (req, res) => {
+  await Supplier.findById(req.params.sup_id, (err, supplier) => {
+    if (err) return res.status(400).json(err);
+    Product.findById(req.params.prod_id, (err, product) => {
+      if (err) return res.status(400).json(err);
+      res.status(200).json(product);
+    });
+  });
+});
+
 module.exports = router;
