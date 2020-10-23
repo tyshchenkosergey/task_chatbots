@@ -1,12 +1,12 @@
 const express = require('express'),
   app = express(),
-  mongoose = require('mongoose'),
-  methodOverride = require('method-override');
+  mongoose = require('mongoose');
 
 require('dotenv').config();
 
+const dbURL = 'mongodb://localhost/chat';
 mongoose
-  .connect(process.env.ATLAS_URL, {
+  .connect(dbURL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -20,13 +20,13 @@ mongoose
   });
 
 //routes
-app.get('/', (req, res) => {
-  res.send('Welcome to the main page');
-});
+const mainRoute = require('./routes/index');
+app.use(mainRoute);
 
+const port = process.env.PORT || 3000;
 app.listen(process.env.PORT, (err) => {
   if (err) {
     console.log('Error: ' + err);
   }
-  console.log('Server is running on ' + process.env.PORT + ' port');
+  console.log('Server is running on port ' + port);
 });
