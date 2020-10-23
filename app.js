@@ -1,10 +1,11 @@
 const express = require('express'),
   app = express(),
-  mongoose = require('mongoose');
+  mongoose = require('mongoose'),
+  bodyParser = require('body-parser');
 
 require('dotenv').config();
 
-const dbURL = 'mongodb://localhost/chat';
+const dbURL = 'mongodb://localhost/store';
 mongoose
   .connect(dbURL, {
     useNewUrlParser: true,
@@ -19,12 +20,15 @@ mongoose
     console.log('ERROR:', err.message);
   });
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 //routes
 const mainRoute = require('./routes/index');
 app.use(mainRoute);
 
 const port = process.env.PORT || 3000;
-app.listen(process.env.PORT, (err) => {
+app.listen(port, (err) => {
   if (err) {
     console.log('Error: ' + err);
   }
